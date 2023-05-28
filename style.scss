@@ -19,8 +19,8 @@ html {
 
 body {
 	background: $white;
-  font: 18px/1.4 'Ruda';
-  font-family: 'Ruda', sans-serif;
+  font: 18px/1.4 'Roboto Slab';
+  font-family: 'Roboto Slab', serif;
   color: $darkGray;
 }
 
@@ -32,7 +32,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: $helveticaNeue;
+  font-family: 'Ruda';
   color: $darkerGray;
   font-weight: bold;
 
