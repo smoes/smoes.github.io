@@ -98,7 +98,8 @@ ol ul, ul ol, ul ul, ol ol {
 .post h1 {
     text-align: center;
     font-size: 35px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+    margin-top: 20px;
 }
 
 .posts .post h1 {
@@ -108,12 +109,17 @@ ol ul, ul ol, ul ul, ol ol {
     margin-top: 10px;
 }
 
+.post .date {
+    text-align: center;
+}
+
 .posts .post .date {
     text-align: left;
     font-size: 30px;
     line-height: 1.3;
     font-size: 16px;
     font-style: normal;
+    margin-top: 20px;
 }
 
 ul ul, ol ul {
