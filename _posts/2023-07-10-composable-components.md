@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Composable, Controllable and Chatty Phoenix Live-Components
+comments: true
 ---
 
 Writing live components in Elixir's Phoenix Framework is a breeze. It
@@ -16,19 +17,26 @@ effortlessly composed with other components.
 
 To understand this blog post, the reader requires basic knowledge in
 Elixir, the Phoenix Framework, as well as live components. The code
-that is shown in the blog post is entirely accessible in a GitHub
-repo, and the story in this post is mirrored in the repo's
-history. Watch out for these banners:
+that is shown in the blog post accessible in a GitHub repo, and the
+story in this post is mirrored in the repo's history. Each
+intermediate step is fully functional. Watch out for these banners:
 
-> You can find the project on Github by [clicking here](https://github.com/smoes/reusable-elixir-components/).
+>  [Open the project](https://github.com/smoes/reusable-elixir-components/) on GitHub.
 
-### Requirements of the Component
+## Requirements
 
-In this blogpost we'll implement a tab component, based on the following requirements. The component...
+In this blogpost we'll implement a tabs component. A tabs component is a
+component that offers a navigation menu or bar with links. When a link
+is clicked the content area of the component shows the relevant information.
 
-1. should be composable with other components [^1]
-2. encapsulates uri-parameter handling to persist the active tab in the uri
-3. the component can be chatty, that is, it can inform the parent live view about state changes 
+The tabs component in die blog post has some additional non-trivial
+requirements. The component...
+
+1. should be composable with other components
+2. encapsulates uri-parameter handling to persist the active tab in
+   the uri
+3. can be chatty, that is, it can inform the parent live
+   view about state changes
 4. is controllable from the parent live view
 
 
@@ -61,11 +69,11 @@ end
 ```
 
 
-I want the call of the tab component to be as simple as
-possible. The component can have tab slots, which consist of a label
-and an ID attribute. The label will be used as the text for the tab
-link, while the ID serves as an internal identifier for later use. The
-content is enclosed within the inner block of the tabs.
+I want the call of the tabs component to be as simple as possible. The
+component can have tab slots, which consist of a label and an ID
+attribute. The label will be used as the text for the tab link, while
+the ID serves as an internal identifier for later use. The content is
+enclosed within the inner block of the tabs.
 
 The tabs component itself is implemented in the
 DemoWeb.Components.Tabs module. I prefer to make the data structure
@@ -155,8 +163,11 @@ instance change.
 
 ```elixir
 def update(assigns, socket) do
+  # check if the state was already initialized, c.f. GitHub
   unless initialized?(socket) do
+    # call a helper method to translate into struct, c.f. GitHub
     tabs = make_tabs(assigns.tab)
+    # make the first tab the active tab
     active = hd(tabs).id
     state = %State{active_id: active, tabs: tabs}
     {:ok, socket |> assign(:state, state)}
@@ -171,7 +182,7 @@ socket object (not that of the live view!) as arguments. Within the
 assigns, we can find a list of slots in tab. Using this information,
 we can update the assigns in the socket object of the live component.
 
-> [Open the code](https://github.com/smoes/reusable-elixir-components/tree/03b849497be5aa3fb2cd485343525a6bef8b4438) of this basic variant on Github
+> [Open the code](https://github.com/smoes/reusable-elixir-components/tree/03b849497be5aa3fb2cd485343525a6bef8b4438) of this basic variant on GitHub
 
 Sadly this simple component doesn't fullfil any of the
 given requirements.
@@ -203,6 +214,7 @@ defmodule DemoWeb.LiveDemo do
     """
   end
 
+  # event handler that increases the counter
   def handle_event("increment", _, socket) do
     next_socket = socket |> update(:counter, fn counter -> counter + 1 end)
     {:noreply, next_socket}
@@ -216,7 +228,7 @@ perfectly fine; it updates after click. Displaying the counter within
 first slot of the tabs component however, doesn't. It will stay at the
 initial value.
 
-> [Open the non-working example](https://github.com/smoes/reusable-elixir-components/tree/a1cba53c11c61c16b42e73bb2036dc637e60694c) on Github
+> [Open code for the non-working example](https://github.com/smoes/reusable-elixir-components/tree/a1cba53c11c61c16b42e73bb2036dc637e60694c) on GitHub
 
 To fix that, we add a field `maybe_inner_state` to the `State` struct
 and write an assign called state into our live component's state:
@@ -254,7 +266,7 @@ we can now pass the assign like follows:
 </.live_component>
 ```
 
-> [Open the working exmaple](https://github.com/smoes/reusable-elixir-components/tree/ec6ca25227a2c8ff757c5241ff4a597bfece4348) on Github
+> [Open code for the working example](https://github.com/smoes/reusable-elixir-components/tree/ec6ca25227a2c8ff757c5241ff4a597bfece4348) on GitHub
 
 ## Introducing URI Prameters
 
@@ -299,6 +311,7 @@ def update(assigns, socket) do
   maybe_inner_state = Map.get(assigns, :state)
   tabs = make_tabs(assigns.tab)
   state = assigns.tabs
+  # use the active tab if already there or the first slot
   active_id = assigns.tabs.active_id || hd(tabs).id
 
   updated_state = %State{
@@ -355,6 +368,8 @@ One oddity to note is that we need to have a `handle_params` function present in
 
 That's it! We have implemented our tabs view to work with URI parameters. Or have we?
 
+> [Open code for parameter example](https://github.com/smoes/reusable-elixir-components/tree/b8106d95796f3c8c4e5f80015e86784061bc6962) on GitHub
+
 
 ## An evil twin
 
@@ -397,6 +412,8 @@ def render(assigns) do
 end
 ```
 
+> [Open code for tabs with identity](https://github.com/smoes/reusable-elixir-components/tree/a7a5e522490196d716f1cd2bce548e0aff3540b6) on GitHub
+
 
 ## Talk to me
 
@@ -434,6 +451,8 @@ def handle_info({:tab_changed, tabs_id, active_tab}, socket) do
 end
 ```
 
+> [Open code for the inform-parent example](https://github.com/smoes/reusable-elixir-components/tree/fc3b0c213a07624cfed57d79824d82f3d2cac98f) on GitHub
+
 
 ## Taking control
 
@@ -451,9 +470,11 @@ This function accepts the live view's socket, the ID of the tab to be activated,
 
 However, at this stage, the abstraction starts to leak. Although we hide the implementation details, it is still possible to override an existing patch in the socket. I haven't found a more elegant solution yet to address this concern.
 
+> [Open code for the outside-controll example](https://github.com/smoes/reusable-elixir-components/tree/ffe2b9465d37e00b66ecc09b6fb1f8aebf77a75f) on GitHub
+
 ## Conclusion
 
-In this lengthy blog post, we have developed a controllable, composable, and optionally chatty tabs component that effectively abstracts away the underlying complexity for developers. The beauty of this implementation is that once it's set up, we can effortlessly compose it with similar components. For example, if we have a pagination component designed in the same manner, we could easily create a tab view with pagination integrated into it:
+In this lengthy blog post, we have developed a controllable, composable, and optionally chatty tabs component that effectively abstracts away the underlying complexity for developers. The beauty of this implementation is that once it's set up, we can effortlessly compose it with similar components. For example, if we have a pagination component designed in the same manner, we could easily create a tab view with pagination integrated:
 
 ```elixir
 <.live_component module={Tabs} id="tabs" tabs={@tabs} state={@something}>
@@ -468,9 +489,16 @@ In this lengthy blog post, we have developed a controllable, composable, and opt
 
 And the best part is that both the tabs component and the pagination component would seamlessly integrate and work with the features we have described throughout this blog post. Since, i have personally tested and verified this, I can assure you that it will work perfectly :)
 
-However, it is important to note that we don't have true composability in the sense that we can combine multiple live components and receive a new live component as a result. This limitation stems from the complex nature of live components and the inherent challenges involved in their composition.
+The final code with specs and some documentation can be found on GitHub:
+
+> [Open code with specs and doc](https://github.com/smoes/reusable-elixir-components/tree/449ce2499383d93fc41e9e1a1e2a832ca414e2b0) on GitHub
+
+
+However, it is important to note that we don't have true composability in the sense that we can combine multiple live components and receive a new live component as a result. This limitation stems from the fact, that each component need the socket of the root live to register the hook. This requires a lot of manual work to plug components together. If I'll come up with a better version, I'll publish a follow up article.
 
 Thanks for reading this blogpost until the end. Now give youself a break!
 
 
-[^1]: By composability, I mean that a component can be used alongside other components, such as children in the resulting view. These components can then be combined within a function to create a new component. It is important to note that this isn't true composability, as we cannot easily combine a live component with another and receive a new live component.
+#### Disclosure
+
+This article was proudly written without the help of any LLM.
