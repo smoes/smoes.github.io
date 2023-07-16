@@ -29,8 +29,8 @@ In this blogpost we'll implement a tabs component. A tabs component is a
 component that offers a navigation menu or bar with links. When a link
 is clicked the content area of the component shows the relevant information.
 
-The tabs component in die blog post has some additional non-trivial
-requirements. The component...
+The tabs component in this blog post has some non-trivial
+requirements: The component...
 
 1. should be composable with other components
 2. encapsulates uri-parameter handling to persist the active tab in
