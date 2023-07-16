@@ -4,12 +4,4 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
-
-### More Information
-
-A place to include any other types of information that you'd like to include about yourself.
-
-### Contact me
-
-[email@domain.com](mailto:email@domain.com)
+Hey there! My name is Simon Härer, I'm a functional programming connoisseur with a keen interest in software architecture that decided to share some thoughts with you.
