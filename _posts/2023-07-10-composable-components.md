@@ -17,7 +17,7 @@ effortlessly composed with other components.
 
 To understand this blog post, the reader requires basic knowledge in
 Elixir, the Phoenix Framework, as well as live components. The code
-that is shown in the blog post accessible in a GitHub repo, and the
+that is shown in the blog post is accessible in a GitHub repo, and the
 story in this post is mirrored in the repo's history. Each
 intermediate step is fully functional. Watch out for these banners:
 
